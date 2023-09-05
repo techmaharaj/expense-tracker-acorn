@@ -1,0 +1,15 @@
+services: atlas: {
+    image: "docker.io/atulinfracloud/acorn-atlas-service"
+}
+
+containers: {
+  app: {
+    build: "."
+    ports: publish: "5000/http"
+    env: {
+      MONGODB_URI: "@{services.atlas.data.proto}://@{services.atlas.secrets.db-creds.username}:@{services.atlas.secrets.db-creds.password}@@{services.atlas.address}"
+      MONGODB_DB_NAME: "ExpenseTrackerDB" // Replace with the name of your database
+      MONGODB_COLLECTION_NAME: "expenses" // Replace with the name of your collection
+  }
+}
+}

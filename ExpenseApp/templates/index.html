@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container-md p-5">
+        <h3 class="display-3">Expense Tracker</h3>
+        <p class="lead">This is a simple expense tracker built using Python and Flask. It uses MongoDB Atlas as the database. Refer the code on GitHub to know more.</p>
+        <p>Enter the expense items in the form below.</p>
+
+        <form method="POST" action="/add">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1" for="category">Category</span>
+                <input type="text" class="form-control" placeholder="Cab, Food, Concert..." aria-label="category" name="category" required>
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="basic-addon1" for="price">Price</span>
+                <input type="number" class="form-control" placeholder="10,20,35..." aria-label="category" name="price" required step="1">
+            </div>
+        <button type="submit" class="btn btn-primary">Add Expense</button>
+    </form>
+    <hr>
+
+    <!-- Expense List -->
+    <div class="container-md bg-light p-3" >
+    <h5 class="display-5 p-2">Currently Added Expenses</h5>
+    <ul class="list-group">
+        {% for expense in expenses %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ expense.category }} - ${{ expense.price }}
+                <div>
+                    <button class="btn btn-primary btn-sm mr-2" data-toggle="modal" data-target="#editModal{{ expense._id }}">Edit</button>
+                    <form action="/delete/{{ expense._id }}" method="POST" class="d-inline">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </div>
+            </li>
+            <!-- Edit Modal -->
+            <div class="modal fade" id="editModal{{ expense._id }}" tabindex="-1" role="dialog" aria-labelledby="editModal{{ expense._id }}Label" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModal{{ expense._id }}Label">Edit Expense</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" action="/edit/{{ expense._id }}">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1" for="new_category">Category</span>
+                                    <input type="text" class="form-control" type="text" name="new_category" value="{{ expense.category }}" required>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1" for="new_price">Price</span>
+                                    <input type="number" class="form-control" name="new_price" step="1" value="{{ expense.price }}" required>
+                                </div>
+                                <input type="hidden" name="_method" value="POST">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </ul>
+    </div>
+    </div>
+     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
